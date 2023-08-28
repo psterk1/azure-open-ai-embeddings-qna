@@ -54,7 +54,7 @@ def check_deployment():
                 st.warning("""Seems like you're using a Redis with an old data structure.  
                 If you want to use the new data structure, you can start using the app and go to "Add Document" -> "Add documents in Batch" and click on "Convert all files and add embeddings" to reprocess your documents.  
                 To remove this working, please delete the index "embeddings-index" from your Redis.  
-                If you prefer to use the old data structure, please change your Web App container image to point to the docker image: fruocco/oai-embeddings:2023-03-27_25. 
+                If you prefer to use the old data structure, please change your Web App container image to point to the docker image: pterk9/oai-embeddings:2023-03-27_25. 
                 """)
             else:
                 st.success("Redis is working!")
