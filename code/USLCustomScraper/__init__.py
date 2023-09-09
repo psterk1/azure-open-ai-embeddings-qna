@@ -1,4 +1,3 @@
-import datetime
 import logging
 import streamlit as st
 from utilities.helper import LLMHelper
@@ -6,6 +5,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+from datetime import timezone
 from zoneinfo import ZoneInfo
 
 import azure.functions as func
@@ -63,14 +63,12 @@ def create_embeddings_from_scraper():
     charset = ''
     current_timestamp = datetime.now(tz=ZoneInfo("America/Los_Angeles")).strftime('%Y-%m-%d_%H:%M:%S')
     filename = "usl_player_stats_" + current_timestamp
-    st.session_state['filename'] = filename
-    st.session_state['file_url'] = llm_helper.blob_client.upload_file(bytes_data, filename, content_type=content_type+charset)
-    llm_helper.add_embeddings_lc(st.session_state['file_url'])
-    st.write("Embeddings created successfully")
+    file_url = llm_helper.blob_client.upload_file(bytes_data, filename, content_type=content_type+charset)
+    llm_helper.add_embeddings_lc(file_url)
 
 def main(mytimer: func.TimerRequest) -> None:
-    utc_timestamp = datetime.datetime.utcnow().replace(
-        tzinfo=datetime.timezone.utc).isoformat()
+    utc_timestamp = datetime.utcnow().replace(
+        tzinfo=timezone.utc).isoformat()
 
     if mytimer.past_due:
         logging.info('The timer is past due!')
