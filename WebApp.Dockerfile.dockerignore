@@ -1,5 +1,6 @@
 code/BatchStartProcessing
 code/BatchPushResults
+code/USLCustomScraper
 code/Dockerfile
 code/__pycache__
 code/environment.yml
