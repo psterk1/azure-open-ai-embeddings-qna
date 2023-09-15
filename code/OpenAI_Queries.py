@@ -16,25 +16,33 @@ def check_deployment():
         llm_helper = LLMHelper()
         llm_helper.get_completion("Generate a joke!")
         st.success("LLM is working!")
+        logging.info("LLM is working")
     except Exception as e:
-        st.error(f"""LLM is not working.  
+        message = f"""LLM is not working.  
             Please check you have a deployment name {llm_helper.deployment_name} in your Azure OpenAI resource {llm_helper.api_base}.  
             If you are using an Instructions based deployment (text-davinci-003), please check you have an environment variable OPENAI_DEPLOYMENT_TYPE=Text or delete the environment variable OPENAI_DEPLOYMENT_TYPE.  
             If you are using a Chat based deployment (gpt-35-turbo or gpt-4-32k or gpt-4), please check you have an environment variable OPENAI_DEPLOYMENT_TYPE=Chat.  
             Then restart your application.
-            """)
+            """
+        st.error(message)
+        logging.info(message)
         st.error(traceback.format_exc())
+        logging.info(traceback.format_exc())
     #\ 2. Check if the embedding is working
     try:
         llm_helper = LLMHelper()
         llm_helper.embeddings.embed_documents(texts=["This is a test"])
         st.success("Embedding is working!")
+        logging.info("Embedding is working!")
     except Exception as e:
-        st.error(f"""Embedding model is not working.  
+        message = f"""Embedding model is not working.  
             Please check you have a deployment named "text-embedding-ada-002" for "text-embedding-ada-002" model in your Azure OpenAI resource {llm_helper.api_base}.  
             Then restart your application.
-            """)
+            """
+        st.error(message)
+        logging.info(message)
         st.error(traceback.format_exc())
+        logging.info(traceback.format_exc())
     #\ 3. Check if the translation is working
     try:
         llm_helper = LLMHelper()
@@ -99,7 +107,7 @@ def get_languages():
     return llm_helper.translator.get_available_languages()
 
 try:
-
+    logging.info("Starting OpenAI_Queries initialization")
     default_prompt = "" 
     default_question = "" 
     default_answer = ""
@@ -128,6 +136,8 @@ try:
     }
     st.set_page_config(layout="wide", menu_items=menu_items)
 
+    logging.info("Set page config")
+
     llm_helper = LLMHelper(custom_prompt=st.session_state.custom_prompt, temperature=st.session_state.custom_temperature)
 
     # Get available languages for translation
@@ -148,6 +158,7 @@ try:
         st.image(os.path.join('images','microsoft.png'))
 
     col1, col2, col3 = st.columns([2,2,2])
+    logging.info("Before check_deployment")
     with col1:
         st.button("Check deployment", on_click=check_deployment)
     with col3:
@@ -161,6 +172,7 @@ try:
             st.text_area("Custom Prompt", key='custom_prompt', on_change=check_variables_in_prompt, placeholder= custom_prompt_placeholder,help=custom_prompt_help, height=150)
             st.selectbox("Language", [None] + list(available_languages.keys()), key='translation_language')
 
+    logging.info("After check_deployment")
     question = st.text_input("OpenAI Semantic Answer", default_question)
 
     if question != '':
@@ -176,5 +188,7 @@ try:
         st.write(f"Translation to other languages, 翻译成其他语言, النص باللغة العربية")
         st.write(f"{llm_helper.translator.translate(st.session_state['response'], available_languages[st.session_state['translation_language']])}")		
 		
+    logging.info("Init completed")
+
 except Exception:
     st.error(traceback.format_exc())
