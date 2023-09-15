@@ -4,6 +4,7 @@
   "parameters": {
     "ResourcePrefix": {
       "type": "string",
+      "defaultValue": "wiz",
       "metadata": {
         "description": "provide a 2-13 character prefix for all resources."
       }
